@@ -1,5 +1,5 @@
 const http = require('node:http')
-const { findAvailablePort } = require('./')
+const { findAvailablePort } = require('./free-port.js')
 
 console.log(process.env)
 
