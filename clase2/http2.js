@@ -1,7 +1,5 @@
 const http = require('node:http')
 
-console.log(process.env)
-
 const desiredPort = process.env.PORT ?? 1234
 
 const server = http.createServer((req, res) => {
@@ -10,6 +8,6 @@ const server = http.createServer((req, res) => {
 })
 
     server.listen(desiredPort, () => {
-        console.log(`server listenning in port http://localhost:${port}`)
+        console.log(`server listenning in port http://localhost:${desiredPort}`)
     })
 
