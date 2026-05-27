@@ -6,7 +6,8 @@ const processRequest = (req, res) => {
     if (req.url === '/'){
         res.statusCode = 200
         res.setHeader('Content-Type', 'text/plain')
-        res.end('Hola mundo')
+        res.setHeader('Charset', 'utf-8')
+        res.end('Hola mundo página')
     }
 }
 
