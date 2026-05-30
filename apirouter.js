@@ -33,3 +33,6 @@ app.post('/jobs', (req, res) => {
   res.status(201).json(newJob)
 })
 
+app.listen(3000, () => {
+  console.log('Server is running in port 3000')
+})
