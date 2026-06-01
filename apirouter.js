@@ -18,7 +18,7 @@ app.get('/jobs', (req, res) => {
 app.post('/jobs', (req, res) => {
   const { company, role } = req.body
 
-  if (!company || role) {
+  if (!company || !role) {
     return res.status(400).json({ error: 'company and role are required' })
   }
 
