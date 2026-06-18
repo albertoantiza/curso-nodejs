@@ -6,8 +6,11 @@ console.log(process.env)
 const desiredPort = process.env.PORT ?? 3400
 
 const processRequest = (req, res) => {
-  console.log('request received: ', req.url)
-  res.end('Hola mundo')
+  if (req.url === '/') {
+    res.statusCode = 200
+    res.setHeader('Content-Type', 'text/html; charset=utf-8')
+    res.end('Bienvenido a mi página de inicio')
+  }
 }
 
 const server = http.createServer(processRequest)
