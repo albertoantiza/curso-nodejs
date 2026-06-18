@@ -5,10 +5,12 @@ console.log(process.env)
 
 const desiredPort = process.env.PORT ?? 3400
 
-const server = http.createServer((req, res) => {
+const processRequest = (req, res) => {
   console.log('request received: ', req.url)
   res.end('Hola mundo')
-})
+}
+
+const server = http.createServer(processRequest)
 
 findAvailablePort(desiredPort).then(port => {
   server.listen(port => {
