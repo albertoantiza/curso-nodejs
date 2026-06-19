@@ -1,7 +1,11 @@
 const http = require('node:http')
 
 const processRequest = (req, res) => {
+  const { method, url } = req
 
+  switch (method) {
+    
+  }
 }
 
 const server = http.createServer(processRequest)
