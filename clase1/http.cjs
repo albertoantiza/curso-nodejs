@@ -1,5 +1,5 @@
 const http = require('node:http')
-const { findAvailablePort } = require('./clase/free-port.js')
+const { findAvailablePort } = require('./free-port.cjs')
 
 console.log(process.env)
 
@@ -16,7 +16,7 @@ const processRequest = (req, res) => {
 const server = http.createServer(processRequest)
 
 findAvailablePort(desiredPort).then(port => {
-  server.listen(port => {
+  server.listen(port, () => {
     console.log(`server listenning in port http://localhost:${port}`)
   })
 })

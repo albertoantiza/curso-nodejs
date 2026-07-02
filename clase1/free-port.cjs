@@ -5,14 +5,14 @@ function findAvailablePort(desiredPort){
         const server = net.createServer()
 
         server.listen(desiredPort, () => {
-            const { port } = server.adress()
+            const { port } = server.address()
             server.close(() => {
                 resolve(port)
             })
         })
 
         server.on('error', (err) => {
-            if (err.code === 'EADDRINUSE') {
+            if (err.code === 'EADDRINUSE' && desiredPort !== 0) {
                 findAvailablePort(0).then(port => resolve(port))
             } else {
                 reject(err)
