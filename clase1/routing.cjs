@@ -4,7 +4,22 @@ const processRequest = (req, res) => {
   const { method, url } = req
 
   switch (method) {
-    a
+    case 'GET':
+      if (url === '/') {
+        res.statusCode = 200
+        res.setHeader('Content-Type', 'text/html; charset=utf-8')
+        res.end('<h1>Bienvenido a mi página</h1>')
+      } else {
+        res.statusCode = 404
+        res.setHeader('Content-Type', 'text/html; charset=utf-8')
+        res.end('<h1>404 Not Found</h1>')
+      }
+      break
+    default:
+      res.statusCode = 405
+      res.setHeader('Content-Type', 'text/html; charset=utf-8')
+      res.end('<h1>405 Method Not Allowed</h1>')
+      break
   }
 }
 
