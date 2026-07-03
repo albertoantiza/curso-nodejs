@@ -2,8 +2,12 @@
   "name": "curso-nodejs",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/apirouter.js",
   "scripts": {
+    "dev:api": "tsx apirouter.ts",
+    "build": "tsc",
+    "start": "node dist/apirouter.js",
+    "typecheck": "tsc --noEmit",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -19,7 +23,11 @@
   },
   "homepage": "https://github.com/elchopo7/curso-nodejs#readme",
   "devDependencies": {
-    "standard": "^17.1.2"
+    "@types/express": "^5.0.6",
+    "@types/node": "^26.1.0",
+    "standard": "^17.1.2",
+    "tsx": "^4.23.0",
+    "typescript": "^6.0.3"
   },
   "eslintConfig": {
     "extends": "standard"
