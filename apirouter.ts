@@ -24,7 +24,7 @@ app.get('/jobs', (_req: Request, res: Response) => {
 app.post('/jobs', (req: Request, res: Response) => {
   const { company, role } = req.body
 
-  if (!company || !role) {
+  if (typeof company !== 'string' || typeof role !== 'string' || !company.trim() || !role.trim()) {
     res.status(400).json({ error: 'company and role are required' })
     return
   }
@@ -40,6 +40,7 @@ app.post('/jobs', (req: Request, res: Response) => {
   res.status(201).json(newJob)
 })
 
-app.listen(3000, () => {
-  console.log('Server is running in port 3000')
+const port = Number(process.env.PORT) || 3000
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`)
 })
