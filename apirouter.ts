@@ -1,4 +1,4 @@
-import express, { type Request, type Response } from 'express'
+import express, { type Request, type Response, type NextFunction } from 'express'
 
 interface Job {
   id: number
@@ -45,12 +45,19 @@ app.get('/jobs/:id', (req: Request, res: Response) => {
   if (!job) return res.status(404).json({ error: 'job not found' })
   res.json(job)
 })
-
 app.delete('/jobs/:id', (req: Request, res: Response) => {
-  const index = jobs.findIndex(j => j.id === Number(req.params.id))
-  if (index === -1) return res.status(404).json({ error: 'job not found' })
-  jobs.splice(index, 1)
+  const idx = jobs.findIndex(j => j.id === Number(req.params.id))
+  if (idx === -1) return res.status(404).json({ error: 'job not found' })
+  jobs.splice(idx, 1)
   res.status(204).end()
+})
+
+app.use((_req: Request, res: Response) => {
+  res.status(404).json({ error: 'not found' })
+})
+
+app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
+  res.status(500).json({ error: err.message })
 })
 
 const port = Number(process.env.PORT) || 3000
