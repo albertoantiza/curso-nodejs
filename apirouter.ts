@@ -40,6 +40,19 @@ app.post('/jobs', (req: Request, res: Response) => {
   res.status(201).json(newJob)
 })
 
+app.get('/jobs/:id', (req: Request, res: Response) => {
+  const job = jobs.find(j => j.id === Number(req.params.id))
+  if (!job) return res.status(404).json({ error: 'job not found' })
+  res.json(job)
+})
+
+app.delete('/jobs/:id', (req: Request, res: Response) => {
+  const index = jobs.findIndex(j => j.id === Number(req.params.id))
+  if (index === -1) return res.status(404).json({ error: 'job not found' })
+  jobs.splice(index, 1)
+  res.status(204).end()
+})
+
 const port = Number(process.env.PORT) || 3000
 app.listen(port, () => {
   console.log(`Server running on port ${port}`)
