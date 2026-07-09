@@ -45,6 +45,15 @@ app.get('/jobs/:id', (req: Request, res: Response) => {
   if (!job) return res.status(404).json({ error: 'job not found' })
   res.json(job)
 })
+app.put('/jobs/:id', (req: Request, res: Response) => {
+  const { company, role } = req.body
+  if (typeof company !== 'string' || typeof role !== 'string' || !company.trim() || !role.trim())
+    return res.status(400).json({ error: 'company and role are required' })
+  const i = jobs.findIndex(j => j.id === Number(req.params.id))
+  if (i === -1) return res.status(404).json({ error: 'job not found' })
+  jobs[i] = { id: jobs[i].id, company, role }
+  res.json(jobs[i])
+})
 app.delete('/jobs/:id', (req: Request, res: Response) => {
   const idx = jobs.findIndex(j => j.id === Number(req.params.id))
   if (idx === -1) return res.status(404).json({ error: 'job not found' })
