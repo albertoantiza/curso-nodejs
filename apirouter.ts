@@ -13,8 +13,14 @@ const jobs: Job[] = [
   { id: 1, company: 'Acme', role: 'Backend Developer' }
 ]
 
+app.get('/', (_req: Request, res: Response) => {
+  res.json({ endpoints: [{ path: '/health', method: 'GET' }, { path: '/jobs', method: 'GET' }, { path: '/jobs', method: 'POST' }, { path: '/jobs/:id', methods: ['GET', 'PUT', 'DELETE'] }] })
+})
 app.get('/health', (_req: Request, res: Response) => {
-  res.status(200).json({ ok: true })
+  res.json({ ok: true })
+})
+app.get('/stats', (_req: Request, res: Response) => {
+  res.json({ totalJobs: jobs.length, uptime: process.uptime() })
 })
 
 app.get('/jobs', (_req: Request, res: Response) => {

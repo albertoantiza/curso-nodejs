@@ -17,6 +17,6 @@ const server = http.createServer(processRequest)
 
 findAvailablePort(Number(desiredPort)).then(port => {
   server.listen(port, () => {
-    console.log(`server listenning in port http://localhost:${port}`)
+    console.log(`server listening at http://localhost:${port}`)
   })
 })

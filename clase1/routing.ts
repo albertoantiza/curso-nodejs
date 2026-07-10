@@ -26,5 +26,5 @@ const processRequest = (req: http.IncomingMessage, res: http.ServerResponse) => 
 const server = http.createServer(processRequest)
 
 server.listen(1234, () => {
-  console.log('server listenning on port http://localhost:1234')
+  console.log('server listening at http://localhost:1234')
 })

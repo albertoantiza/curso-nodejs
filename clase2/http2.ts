@@ -13,5 +13,5 @@ const processRequest = (req: http.IncomingMessage, res: http.ServerResponse) => 
 const server = http.createServer(processRequest)
 
 server.listen(Number(desiredPort), () => {
-  console.log(`server listenning in port http://localhost:${desiredPort}`)
+  console.log(`server listening at http://localhost:${desiredPort}`)
 })
