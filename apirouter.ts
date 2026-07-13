@@ -8,6 +8,11 @@ interface Job {
 
 const app = express()
 app.use(express.json())
+app.use((req: Request, res: Response, next: NextFunction) => {
+  const start = Date.now()
+  res.on('finish', () => console.log(`${req.method} ${req.url} ${res.statusCode} ${Date.now() - start}ms`))
+  next()
+})
 
 const jobs: Job[] = [
   { id: 1, company: 'Acme', role: 'Backend Developer' }
@@ -23,8 +28,13 @@ app.get('/stats', (_req: Request, res: Response) => {
   res.json({ totalJobs: jobs.length, uptime: process.uptime() })
 })
 
-app.get('/jobs', (_req: Request, res: Response) => {
-  res.status(200).json(jobs)
+app.get('/jobs', (req: Request, res: Response) => {
+  const { q } = req.query
+  if (q && typeof q === 'string') {
+    const filtered = jobs.filter(j => j.company.toLowerCase().includes(q.toLowerCase()) || j.role.toLowerCase().includes(q.toLowerCase()))
+    return res.json(filtered)
+  }
+  res.json(jobs)
 })
 
 app.post('/jobs', (req: Request, res: Response) => {

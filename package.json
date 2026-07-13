@@ -8,6 +8,7 @@
     "build": "tsc",
     "start": "node dist/apirouter.js",
     "typecheck": "tsc --noEmit",
+    "lint": "standard",
     "test": "tsc --noEmit"
   },
   "repository": {

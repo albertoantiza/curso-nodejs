@@ -7,7 +7,7 @@ async function fetchData (): Promise<void> {
   console.log(data)
 }
 
-fetchData()
+fetchData().catch(console.error)
 
 // Ejercicio 2: Promises and async/await
 
