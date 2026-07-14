@@ -1,12 +1,13 @@
 {
   "name": "curso-nodejs",
   "version": "1.0.0",
-  "description": "",
+  "description": "Node.js course project",
   "main": "dist/apirouter.js",
   "scripts": {
     "dev:api": "tsx apirouter.ts",
     "build": "tsc",
     "start": "node dist/apirouter.js",
+    "clean": "rm -rf dist",
     "typecheck": "tsc --noEmit",
     "lint": "standard",
     "test": "tsc --noEmit"

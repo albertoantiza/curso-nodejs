@@ -1,6 +1,6 @@
 import net from 'node:net'
 
-function findAvailablePort (desiredPort: number): Promise<number> {
+function findAvailablePort (desiredPort: number, maxRetries = 5): Promise<number> {
   return new Promise((resolve, reject) => {
     const server = net.createServer()
 
@@ -18,7 +18,8 @@ function findAvailablePort (desiredPort: number): Promise<number> {
 
     server.on('error', (err: NodeJS.ErrnoException) => {
       if (err.code === 'EADDRINUSE' && desiredPort !== 0) {
-        findAvailablePort(0).then(port => resolve(port))
+        if (maxRetries <= 0) return reject(err)
+        findAvailablePort(0, maxRetries - 1).then(port => resolve(port))
       } else {
         reject(err)
       }

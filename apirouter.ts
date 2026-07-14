@@ -19,7 +19,7 @@ const jobs: Job[] = [
 ]
 
 app.get('/', (_req: Request, res: Response) => {
-  res.json({ endpoints: [{ path: '/health', method: 'GET' }, { path: '/jobs', method: 'GET' }, { path: '/jobs', method: 'POST' }, { path: '/jobs/:id', methods: ['GET', 'PUT', 'DELETE'] }] })
+  res.json({ endpoints: [{ path: '/health', method: 'GET' }, { path: '/stats', method: 'GET' }, { path: '/jobs', method: 'GET' }, { path: '/jobs', method: 'POST' }, { path: '/jobs/search?q=', method: 'GET' }, { path: '/jobs/:id', methods: ['GET', 'PUT', 'DELETE'] }] })
 })
 app.get('/health', (_req: Request, res: Response) => {
   res.json({ ok: true })
@@ -47,8 +47,8 @@ app.post('/jobs', (req: Request, res: Response) => {
 
   const newJob: Job = {
     id: jobs.length + 1,
-    company,
-    role
+    company: company.trim(),
+    role: role.trim()
   }
 
   jobs.push(newJob)
@@ -67,7 +67,7 @@ app.put('/jobs/:id', (req: Request, res: Response) => {
     return res.status(400).json({ error: 'company and role are required' })
   const i = jobs.findIndex(j => j.id === Number(req.params.id))
   if (i === -1) return res.status(404).json({ error: 'job not found' })
-  jobs[i] = { id: jobs[i].id, company, role }
+  jobs[i] = { id: jobs[i].id, company: company.trim(), role: role.trim() }
   res.json(jobs[i])
 })
 app.delete('/jobs/:id', (req: Request, res: Response) => {
@@ -85,7 +85,10 @@ app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
   res.status(500).json({ error: err.message })
 })
 
+process.on('unhandledRejection', console.error)
+process.on('uncaughtException', console.error)
+
 const port = Number(process.env.PORT) || 3000
 app.listen(port, () => {
-  console.log(`Server running on port ${port}`)
+  console.log(`Server running at http://localhost:${port}`)
 })
