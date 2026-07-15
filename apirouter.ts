@@ -6,8 +6,11 @@ interface Job {
   role: string
 }
 
+let requestCount = 0
+
 const app = express()
 app.use(express.json())
+app.use((_req: Request, _res: Response, next: NextFunction) => { requestCount++; next() })
 app.use((req: Request, res: Response, next: NextFunction) => {
   const start = Date.now()
   res.on('finish', () => console.log(`${req.method} ${req.url} ${res.statusCode} ${Date.now() - start}ms`))
@@ -24,8 +27,11 @@ app.get('/', (_req: Request, res: Response) => {
 app.get('/health', (_req: Request, res: Response) => {
   res.json({ ok: true })
 })
+app.get('/ping', (_req: Request, res: Response) => {
+  res.send('pong')
+})
 app.get('/stats', (_req: Request, res: Response) => {
-  res.json({ totalJobs: jobs.length, uptime: process.uptime() })
+  res.json({ totalJobs: jobs.length, requests: requestCount, uptime: process.uptime() })
 })
 
 app.get('/jobs', (req: Request, res: Response) => {
@@ -90,5 +96,5 @@ process.on('uncaughtException', console.error)
 
 const port = Number(process.env.PORT) || 3000
 app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`)
+  console.log(`Server running at http://localhost:${port} [${process.env.NODE_ENV ?? 'development'}]`)
 })

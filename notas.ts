@@ -26,3 +26,7 @@ try {
 } catch (err) {
   console.log(err)
 }
+
+// Ejercicio 3: Concurrency
+const posts = await Promise.all([1, 2].map(id => fetch(`https://jsonplaceholder.typicode.com/posts/${id}`).then(r => r.json())))
+console.log(posts.length)
