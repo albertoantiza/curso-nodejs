@@ -10,6 +10,7 @@
     "clean": "rm -rf dist",
     "typecheck": "tsc --noEmit",
     "lint": "standard",
+    "format": "standard --fix",
     "test": "tsc --noEmit"
   },
   "repository": {

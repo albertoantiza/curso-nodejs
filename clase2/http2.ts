@@ -7,6 +7,9 @@ const processRequest = (req: http.IncomingMessage, res: http.ServerResponse) => 
     res.statusCode = 200
     res.setHeader('Content-Type', 'text/plain; charset=utf-8')
     res.end('Hola mundo página')
+  } else {
+    res.statusCode = 404
+    res.end('404 Not Found')
   }
 }
 

@@ -9,6 +9,7 @@ interface Job {
 let requestCount = 0
 
 const app = express()
+app.disable('x-powered-by')
 app.use(express.json())
 app.use((_req: Request, _res: Response, next: NextFunction) => { requestCount++; next() })
 app.use((req: Request, res: Response, next: NextFunction) => {
@@ -35,12 +36,13 @@ app.get('/stats', (_req: Request, res: Response) => {
 })
 
 app.get('/jobs', (req: Request, res: Response) => {
-  const { q } = req.query
+  const { q, page = '1', limit = '10' } = req.query
+  let result = jobs
   if (q && typeof q === 'string') {
-    const filtered = jobs.filter(j => j.company.toLowerCase().includes(q.toLowerCase()) || j.role.toLowerCase().includes(q.toLowerCase()))
-    return res.json(filtered)
+    result = jobs.filter(j => j.company.toLowerCase().includes(q.toLowerCase()) || j.role.toLowerCase().includes(q.toLowerCase()))
   }
-  res.json(jobs)
+  const start = (Number(page) - 1) * Number(limit)
+  res.json({ data: result.slice(start, start + Number(limit)), total: result.length })
 })
 
 app.post('/jobs', (req: Request, res: Response) => {
@@ -88,7 +90,8 @@ app.use((_req: Request, res: Response) => {
 })
 
 app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
-  res.status(500).json({ error: err.message })
+  const status = err instanceof SyntaxError ? 400 : 500
+  res.status(status).json({ error: err.message })
 })
 
 process.on('unhandledRejection', console.error)

@@ -1,8 +1,6 @@
 import http from 'node:http'
 import { findAvailablePort } from './free-port.js'
 
-console.log(process.env)
-
 const desiredPort = process.env.PORT ?? 3400
 
 const processRequest = (req: http.IncomingMessage, res: http.ServerResponse) => {
@@ -10,6 +8,10 @@ const processRequest = (req: http.IncomingMessage, res: http.ServerResponse) => 
     res.statusCode = 200
     res.setHeader('Content-Type', 'text/html; charset=utf-8')
     res.end('Bienvenido a mi página de inicio')
+  } else {
+    res.statusCode = 404
+    res.setHeader('Content-Type', 'text/html; charset=utf-8')
+    res.end('<h1>404 Not Found</h1>')
   }
 }
 
