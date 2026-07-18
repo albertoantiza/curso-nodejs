@@ -9,6 +9,13 @@ interface Job {
 let requestCount = 0
 
 const app = express()
+app.use((_req: Request, res: Response, next: NextFunction) => {
+  res.set('Access-Control-Allow-Origin', '*')
+  res.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
+  res.set('Access-Control-Allow-Headers', 'Content-Type')
+  if (_req.method === 'OPTIONS') { res.status(204).end(); return }
+  next()
+})
 app.disable('x-powered-by')
 app.use(express.json())
 app.use((_req: Request, _res: Response, next: NextFunction) => { requestCount++; next() })
@@ -101,6 +108,15 @@ process.on('unhandledRejection', console.error)
 process.on('uncaughtException', console.error)
 
 const port = Number(process.env.PORT) || 3000
-app.listen(port, () => {
+const server = app.listen(port, () => {
   console.log(`Server running at http://localhost:${port} [${process.env.NODE_ENV ?? 'development'}]`)
 })
+
+server.on('error', (err: NodeJS.ErrnoException) => {
+  if (err.code === 'EADDRINUSE') console.error(`Port ${port} is already in use`)
+  else console.error(err)
+  process.exit(1)
+})
+
+process.on('SIGTERM', () => server.close(() => process.exit(0)))
+process.on('SIGINT', () => server.close(() => process.exit(0)))
