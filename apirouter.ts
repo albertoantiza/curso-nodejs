@@ -25,6 +25,24 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   next()
 })
 
+const hits = new Map<string, number[]>()
+app.use((req: Request, res: Response, next: NextFunction) => {
+  res.setTimeout(10000, () => res.status(408).json({ error: 'request timeout' }))
+  const window = (hits.get(req.ip!) ?? []).filter(t => t > Date.now() - 60000)
+  if (window.length >= 100) return res.status(429).json({ error: 'too many requests' })
+  window.push(Date.now())
+  hits.set(req.ip!, window)
+  next()
+})
+
+app.use((req: Request, res: Response, next: NextFunction) => {
+  if (['POST', 'PUT', 'PATCH'].includes(req.method) && !req.is('json')) return res.status(415).json({ error: 'Content-Type must be application/json' })
+  next()
+})
+
+app.set('trust proxy', 1)
+app.use((req: Request, res: Response, next: NextFunction) => { res.set('X-Request-Id', crypto.randomUUID()); next() })
+
 const jobs: Job[] = [
   { id: 1, company: 'Acme', role: 'Backend Developer' }
 ]
@@ -41,6 +59,14 @@ app.get('/ping', (_req: Request, res: Response) => {
 app.get('/stats', (_req: Request, res: Response) => {
   res.json({ totalJobs: jobs.length, requests: requestCount, uptime: process.uptime() })
 })
+
+app.head('/jobs', (req: Request, res: Response) => { res.set('X-Total-Count', String(jobs.length)); res.end() })
+app.head('/jobs/:id', (req: Request, res: Response) => { const job = jobs.find(j => j.id === Number(req.params.id)); res.status(job ? 200 : 404).end() })
+app.get('/time', (_req: Request, res: Response) => { res.json({ iso: new Date().toISOString(), unix: Date.now() }) })
+app.get('/env', (_req: Request, res: Response) => { res.json({ node: process.version, platform: process.platform, env: process.env.NODE_ENV ?? 'development', pid: process.pid }) })
+app.get('/echo', (req: Request, res: Response) => { res.json({ headers: req.headers, method: req.method, url: req.url, ip: req.ip }) })
+app.get('/memory', (_req: Request, res: Response) => { const { rss, heapTotal, heapUsed } = process.memoryUsage(); res.json({ rss, heapTotal, heapUsed }) })
+app.get('/version', (_req: Request, res: Response) => { res.json({ version: '1.0.0', uptime: process.uptime() }) })
 
 app.get('/jobs', (req: Request, res: Response) => {
   const { q, page = '1', limit = '10' } = req.query
@@ -120,3 +146,6 @@ server.on('error', (err: NodeJS.ErrnoException) => {
 
 process.on('SIGTERM', () => server.close(() => process.exit(0)))
 process.on('SIGINT', () => server.close(() => process.exit(0)))
+
+export type { Job }
+export { app }
